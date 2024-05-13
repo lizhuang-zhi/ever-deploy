@@ -1,37 +1,36 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net/http"
+	"server1/config"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
 func main() {
 	// 接收命令行参数
-	configPath := flag.String("config", ".", "path to config file")
-	flag.Parse()
+	configFile := pflag.StringP("config", "c", "../config/config1.yaml", "choose config file.") // 指定配置文件
+	pflag.Parse()
 
-	// 初始化 viper
+	// 解析配置文件
 	v := viper.New()
+	v.SetConfigFile(*configFile)
+	err := v.ReadInConfig()
+	if err != nil {
+		fmt.Errorf("fatal error config file: %s", err)
+		return
+	}
+	var Config *config.Config
 
-	// 设置配置文件的名称
-	v.SetConfigName("config1") // 注意这里不带文件扩展名
-	// 设置读取的文件类型
-	v.SetConfigType("yaml")
-
-	// 使用命令行参数指定的路径
-	v.AddConfigPath(*configPath) // 配置文件的路径
-
-	// 读取配置数据
-	if err := v.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	if err := v.Unmarshal(&Config); err != nil {
+		fmt.Errorf("unmarshal config file error: %s", err)
+		return
 	}
 
-	// 获取嵌套配置信息
-	port := v.GetString("system.tcp_port") // 获取 system 下的 tcp_port 配置
+	port := Config.System.TcpPort // 获取 system 下的 tcp_port 配置
 
 	// 初始化 Gin
 	r := gin.Default()
