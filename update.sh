@@ -19,7 +19,7 @@ echo "Update server1 project..."
 cd .. # 回到根目录
 
 # 设置nginx权重（server1无权重）
-mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
+sudo mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
 
 # 关闭server1进程
 nginx -t; systemctl reload nginx; supervisorctl stop prod:server1 || { echo "stop server1 failed"; exit 1; }
@@ -32,7 +32,7 @@ supervisorctl start prod:server1  || { echo "supervisorctl server1 failed"; exit
 echo "Update server2 project..."
 
 # 设置nginx权重（server2无权重）
-mv nginx/server.2.conf /etc/nginx/conf.d/server.conf || { echo "mv server.2.conf failed"; exit 1; }
+sudo mv nginx/server.2.conf /etc/nginx/conf.d/server.conf || { echo "mv server.2.conf failed"; exit 1; }
 
 # 关闭server2进程
 nginx -t; systemctl reload nginx; supervisorctl stop prod:server2 || { echo "stop server2 failed"; exit 1; }
@@ -42,7 +42,7 @@ scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever
 supervisorctl start prod:server2 || { echo "supervisorctl server2 failed"; exit 1; }
 
 # 恢复nginx权重
-mv nginx/server.conf /etc/nginx/conf.d/server.conf || { echo "mv server.conf failed"; exit 1; }
+sudo mv nginx/server.conf /etc/nginx/conf.d/server.conf || { echo "mv server.conf failed"; exit 1; }
 nginx -t; systemctl reload nginx || { echo "nginx reload failed"; exit 1; }
 
 echo "Update complete."
