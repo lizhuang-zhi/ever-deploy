@@ -16,6 +16,10 @@ HOST=10.1.27.86  # 执行部署的服务器地址
 ######### 部署server1 ############
 echo "Update server1 project..."
 
+pwd
+
+ls -la
+
 # 设置nginx权重（server1无权重）
 scp -i /var/lib/jenkins/.ssh/id_rsa nginx/server.1.conf root@${HOST}:/etc/nginx/conf.d/server.conf || { echo "scp server.1.conf failed"; exit 1; }
 
