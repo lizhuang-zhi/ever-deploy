@@ -1,6 +1,6 @@
 #!/bin/sh -xe
 echo $PATH
-cd ./server2  
+cd ./server2  # 这里/server2下的gin-server模拟v2版本的gin-server
 rm -rf gin-server  # 删除之前目录中构建的gin-server应用
 /usr/local/go/bin/go build -o gin-server main.go || { echo "Go build failed"; exit 1; }  # 构建最新版本的服务
 
