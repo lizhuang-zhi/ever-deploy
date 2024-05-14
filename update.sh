@@ -18,13 +18,6 @@ echo "Update server1 project..."
 
 cd .. # 回到根目录
 
-# 拷贝supervisor配置文件
-scp -i /var/lib/jenkins/.ssh/id_rsa ./supervisor/gin_server_center.ini root@${HOST}:/home/ever-deploy/ || { echo "scp gin_server_center.ini failed"; exit 1; }
-
-# 重新加载10.1.27.86虚拟机的supervisor配置
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl reread; sudo supervisorctl update; sudo supervisorctl start all; sudo supervisorctl status" || { echo "restart supervisor config failed"; exit 1; }
-
-
 # 设置nginx权重（server1无权重）
 sudo mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
 
