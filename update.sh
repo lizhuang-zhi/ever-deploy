@@ -25,7 +25,9 @@ scp -i /var/lib/jenkins/.ssh/id_rsa ./supervisor/gin_server_center.ini root@${HO
 sudo mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
 
 # 关闭server1进程
-sudo nginx -t; sudo systemctl reload nginx; sudo supervisorctl stop prod:server1 || { echo "stop server1 failed"; exit 1; }
+sudo nginx -t; sudo systemctl reload nginx; || { echo "reload nginx 1 failed"; exit 1; }
+ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl stop prod:server1" || { echo "stop server1 failed"; exit 1; }
+
 # 更新server1内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server1/
 # 开启server1进程
@@ -38,7 +40,9 @@ echo "Update server2 project..."
 sudo mv nginx/server.2.conf /etc/nginx/conf.d/server.conf || { echo "mv server.2.conf failed"; exit 1; }
 
 # 关闭server2进程
-sudo nginx -t; sudo systemctl reload nginx; sudo supervisorctl stop prod:server2 || { echo "stop server2 failed"; exit 1; }
+sudo nginx -t; sudo systemctl reload nginx; | { echo "reload nginx 2 failed"; exit 1; }
+ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl stop prod:server2" || { echo "stop server1 failed"; exit 1; }
+
 # 更新server2内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server2/
 # 开启server2进程
