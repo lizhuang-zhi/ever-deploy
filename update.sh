@@ -31,7 +31,7 @@ ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl stop prod:s
 # 更新server1内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server1/
 # 开启server1进程
-supervisorctl start prod:server1  || { echo "supervisorctl server1 failed"; exit 1; }
+ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl start prod:server1" || { echo "supervisorctl server1 failed"; exit 1; }
 
 ######### 部署server2 ############
 echo "Update server2 project..."
@@ -46,7 +46,7 @@ ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl stop prod:s
 # 更新server2内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server2/
 # 开启server2进程
-supervisorctl start prod:server2 || { echo "supervisorctl server2 failed"; exit 1; }
+ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl start prod:server1" || { echo "supervisorctl server2 failed"; exit 1; }
 
 # 恢复nginx权重
 sudo mv nginx/server.conf /etc/nginx/conf.d/server.conf || { echo "mv server.conf failed"; exit 1; }
