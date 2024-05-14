@@ -18,6 +18,8 @@ echo "Update server1 project..."
 
 cd .. # 回到根目录
 
+pwd
+
 # 设置nginx权重（server1无权重）
 sudo mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
 
