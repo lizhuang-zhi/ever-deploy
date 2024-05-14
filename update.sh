@@ -35,7 +35,7 @@ echo "Update server2 project..."
 sudo mv nginx/server.2.conf /etc/nginx/conf.d/server.conf || { echo "mv server.2.conf failed"; exit 1; }
 
 # 关闭server2进程
-nginx -t; systemctl reload nginx; supervisorctl stop prod:server2 || { echo "stop server2 failed"; exit 1; }
+sudo nginx -t; sudo systemctl reload nginx; sudo supervisorctl stop prod:server2 || { echo "stop server2 failed"; exit 1; }
 # 更新server2内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server2/
 # 开启server2进程
@@ -43,6 +43,6 @@ supervisorctl start prod:server2 || { echo "supervisorctl server2 failed"; exit 
 
 # 恢复nginx权重
 sudo mv nginx/server.conf /etc/nginx/conf.d/server.conf || { echo "mv server.conf failed"; exit 1; }
-nginx -t; systemctl reload nginx || { echo "nginx reload failed"; exit 1; }
+sudo nginx -t; sudo systemctl reload nginx || { echo "nginx reload failed"; exit 1; }
 
 echo "Update complete."
