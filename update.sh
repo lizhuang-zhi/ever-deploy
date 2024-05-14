@@ -19,29 +19,30 @@ echo "Update server1 project..."
 cd .. # 回到根目录
 
 # 设置nginx权重（server1无权重）
-scp -i /var/lib/jenkins/.ssh/id_rsa nginx/server.1.conf root@${HOST}:/etc/nginx/conf.d/server.conf || { echo "scp server.1.conf failed"; exit 1; }
+mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
 
 # 关闭server1进程
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} ' nginx -t; systemctl reload nginx; supervisorctl stop prod:server1'
+nginx -t; systemctl reload nginx; supervisorctl stop prod:server1 || { echo "stop server1 failed"; exit 1; }
 # 更新server1内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server1/
 # 开启server1进程
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} ' supervisorctl start prod:server1'
+supervisorctl start prod:server1  || { echo "supervisorctl server1 failed"; exit 1; }
 
 ######### 部署server2 ############
 echo "Update server2 project..."
 
 # 设置nginx权重（server2无权重）
-scp -i /var/lib/jenkins/.ssh/id_rsa ./nginx/server.2.conf root@${HOST}:/etc/nginx/conf.d/server.conf
+mv nginx/server.2.conf /etc/nginx/conf.d/server.conf || { echo "mv server.2.conf failed"; exit 1; }
+
 # 关闭server2进程
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} ' nginx -t; systemctl reload nginx; supervisorctl stop prod:server2'
+nginx -t; systemctl reload nginx; supervisorctl stop prod:server2 || { echo "stop server2 failed"; exit 1; }
 # 更新server2内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server2/
 # 开启server2进程
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} ' supervisorctl start prod:server2'
+supervisorctl start prod:server2 || { echo "supervisorctl server2 failed"; exit 1; }
 
 # 恢复nginx权重
-scp -i /var/lib/jenkins/.ssh/id_rsa ./nginx/server.conf root@${HOST}:/etc/nginx/conf.d/server.conf
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} ' nginx -t; systemctl reload nginx'
+mv nginx/server.conf /etc/nginx/conf.d/server.conf || { echo "mv server.conf failed"; exit 1; }
+nginx -t; systemctl reload nginx || { echo "nginx reload failed"; exit 1; }
 
 echo "Update complete."
