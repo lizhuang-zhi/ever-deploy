@@ -22,7 +22,7 @@ cd .. # 回到根目录
 scp -i /var/lib/jenkins/.ssh/id_rsa ./supervisor/gin_server_center.ini root@${HOST}:/home/ever-deploy/ || { echo "scp gin_server_center.ini failed"; exit 1; }
 
 # 重新加载10.1.27.86虚拟机的supervisor配置
-ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl reread; sudo supervisorctl update" || { echo "restart supervisor config failed"; exit 1; }
+ssh -i /var/lib/jenkins/.ssh/id_rsa root@${HOST} "sudo supervisorctl reread; sudo supervisorctl update; sudo supervisorctl start all; sudo supervisorctl status" || { echo "restart supervisor config failed"; exit 1; }
 
 
 # 设置nginx权重（server1无权重）
