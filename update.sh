@@ -22,7 +22,7 @@ cd .. # 回到根目录
 sudo mv nginx/server.1.conf /etc/nginx/conf.d/server.conf || { echo "mv server.1.conf failed"; exit 1; }
 
 # 关闭server1进程
-nginx -t; systemctl reload nginx; supervisorctl stop prod:server1 || { echo "stop server1 failed"; exit 1; }
+sudo nginx -t; sudo systemctl reload nginx; sudo supervisorctl stop prod:server1 || { echo "stop server1 failed"; exit 1; }
 # 更新server1内容
 scp -i /var/lib/jenkins/.ssh/id_rsa ./server2/gin-server root@${HOST}:/home/ever-deploy/server1/
 # 开启server1进程
